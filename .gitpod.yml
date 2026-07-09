@@ -1,0 +1,23 @@
+image: gitpod/workspace-full
+
+tasks:
+  - name: android-setup
+    init: |
+      sudo apt-get update
+      sudo apt-get install -y unzip openjdk-17-jdk gradle
+      export ANDROID_SDK_ROOT=$HOME/android-sdk
+      mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+      cd $ANDROID_SDK_ROOT/cmdline-tools
+      curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+      unzip -q tools.zip
+      mv cmdline-tools latest
+      rm tools.zip
+      echo 'export ANDROID_SDK_ROOT=$HOME/android-sdk' >> ~/.bashrc
+      echo 'export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/34.0.0' >> ~/.bashrc
+      export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+      yes | sdkmanager --licenses > /dev/null 2>&1 || true
+      sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      echo "Setup complete! Ab 'gradle assembleDebug' chala sakte hain."
+    command: |
+      echo "Environment ready hai. APK banane ke liye ye chalayein:"
+      echo "gradle assembleDebug"
